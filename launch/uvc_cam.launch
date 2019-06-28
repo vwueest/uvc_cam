@@ -1,0 +1,20 @@
+<launch>
+    <arg name="name" default="camera"/>
+    <arg name="image" default="image_raw"/>
+    <arg name="camera" default="camera_info"/>
+    <arg name="calibration" default="$(find uvc_cam)/calib/openMV_pinhole.yaml"/>
+
+    <group ns="$(arg name)">
+
+	<!-- camera node, set parameters in uvc_cam_node.py -->
+        <node pkg="uvc_cam" name="uvc_cam" type="uvc_cam_node.py" output="screen">
+            <param name="image" value="$(arg image)"/>
+            <param name="camera" value="$(arg camera)"/>
+            <param name="calibration" value="$(arg calibration)"/>
+        </node>
+
+	<!-- image rectification node -->
+        <node pkg="image_proc" name="image_proc" type="image_proc"/>
+
+    </group>
+</launch>

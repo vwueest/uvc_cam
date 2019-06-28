@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package>
+  <name>uvc_cam</name>
+  <version>0.0.1</version>
+  <description>The uvc_cam package, based on OpenMV Cam ROS Package by Fabian Schilling (https://github.com/fabianschilling/openmv_cam)</description>
+
+  <maintainer email="valentinwueest@gmail.com">Valentin Wueest</maintainer>
+
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <run_depend>camera_info_manager_py</run_depend>
+  <run_depend>cv_bridge</run_depend>
+  <run_depend>image_proc</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+
+</package>

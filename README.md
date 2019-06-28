@@ -5,11 +5,10 @@ First, install the UVC library for python,
 ```
 pip install --user uvc
 ```
-Then, clone the repo and source the workspace,
+Then, clone the repo,
 ```
 cd ~/catkin_ws/src
 git clone https://github.com/vwueest/uvc_cam.git
-source ~/catkin_ws/devel/setup.bash
 ```
 Finally, run the launch file,
 ```

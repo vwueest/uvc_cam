@@ -3,6 +3,7 @@
     <arg name="image" default="image_raw"/>
     <arg name="camera" default="camera_info"/>
     <arg name="calibration" default="$(find uvc_cam)/calib/openMV_pinhole.yaml"/>
+    <arg name="rectify" default="false"/>
 
     <group ns="$(arg name)">
 
@@ -14,7 +15,7 @@
         </node>
 
 	<!-- image rectification node -->
-        <node pkg="image_proc" name="image_proc" type="image_proc"/>
+        <node pkg="image_proc" name="image_proc" type="image_proc" if="$(arg rectify)"/>
 
     </group>
 </launch>

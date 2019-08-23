@@ -25,6 +25,8 @@ class UVCCamNode:
 	# possible values to set can be found by running "rosrun uvc_camera uvc_camera_node _device:=/dev/video1", see http://github.com/ros-drivers/camera_umd.git
 	dev_list = uvc.device_list()
 	self.cap = uvc.Capture(dev_list[0]["uid"])
+	#self.cap.frame_mode = (960, 540, 120) 
+	#self.cap.frame_mode = (640, 480, 120) 
 	self.cap.frame_mode = (640, 480, 90)
 	frame = self.cap.get_frame_robust()
 	controls_dict = dict([(c.display_name, c) for c in self.cap.controls])

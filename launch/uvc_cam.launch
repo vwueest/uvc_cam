@@ -6,6 +6,7 @@
     <arg name="width" default="640"/>
     <arg name="height" default="480"/>
     <arg name="fps" default="90"/>
+    <arg name="rectify" default="false"/>
 
     <group ns="$(arg name)">
 
@@ -20,7 +21,7 @@
         </node>
 
 	<!-- image rectification node -->
-        <node pkg="image_proc" name="image_proc" type="image_proc"/>
+        <node pkg="image_proc" name="image_proc" type="image_proc" if="$(arg rectify)"/>
 
     </group>
 </launch>

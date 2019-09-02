@@ -14,6 +14,9 @@ from sensor_msgs.msg import CameraInfo, Image
 DEFAULT_CAMERA_NAME = 'uvc_cam'
 DEFAULT_IMAGE_TOPIC = 'image_raw'
 DEFAULT_CAMERA_TOPIC = 'camera_info'
+DEFAULT_WIDTH = 960#640
+DEFAULT_HEIGHT = 540#480
+DEFAULT_FPS = 90
 
 
 class UVCCamNode:
@@ -22,10 +25,19 @@ class UVCCamNode:
 
         rospy.init_node('{}_node'.format(DEFAULT_CAMERA_NAME), argv=sys.argv)
 
-	# possible values to set can be found by running "rosrun uvc_camera uvc_camera_node _device:=/dev/video1", see http://github.com/ros-drivers/camera_umd.git
+        self.image_topic  = rospy.get_param('~image', DEFAULT_IMAGE_TOPIC)
+        self.camera_topic = rospy.get_param('~camera', DEFAULT_CAMERA_TOPIC)
+        self.calibration  = rospy.get_param('~calibration', '')
+        self.encoding     = rospy.get_param('~encoding','mono8')
+        self.width        = rospy.get_param('~width', DEFAULT_WIDTH)
+        self.height       = rospy.get_param('~height', DEFAULT_HEIGHT)
+        self.fps          = rospy.get_param('~fps', DEFAULT_FPS)
+
+	# possible values to set can be found by running "rosrun uvc_camera uvc_camera_node _device:=/dev/video0", see http://github.com/ros-drivers/camera_umd.git
 	dev_list = uvc.device_list()
 	self.cap = uvc.Capture(dev_list[0]["uid"])
-	self.cap.frame_mode = (640, 480, 90)
+        rospy.loginfo('starting cam at %ifps with %ix%i resolution'%(self.fps,self.width,self.height))
+        self.cap.frame_mode = (self.width, self.height, self.fps)
 	frame = self.cap.get_frame_robust()
 	controls_dict = dict([(c.display_name, c) for c in self.cap.controls])
 	controls_dict['Brightness'].value = 10 #[-64,64], not 0 (no effect)!!
@@ -43,11 +55,6 @@ class UVCCamNode:
 	rospy.loginfo("These camera settings will be applied:")
 	for c in self.cap.controls:
 		rospy.loginfo('%s: %i'%(c.display_name, c.value))
-
-        self.image_topic  = rospy.get_param('~image', DEFAULT_IMAGE_TOPIC)
-        self.camera_topic = rospy.get_param('~camera', DEFAULT_CAMERA_TOPIC)
-        self.calibration  = rospy.get_param('~calibration', '')
-	self.encoding     = rospy.get_param('~encoding','mono8')
 
         self.manager = CameraInfoManager(cname=DEFAULT_CAMERA_NAME,
                                          url='file://' + self.calibration,

@@ -1,5 +1,5 @@
 <launch>
-    <arg name="name" default="camera"/>
+    <arg name="name" default="forward"/>
     <arg name="image" default="image_raw"/>
     <arg name="camera" default="camera_info"/>
     <arg name="calibration" default="$(find uvc_cam)/calib/openMV_pinhole.yaml"/>

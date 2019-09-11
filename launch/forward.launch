@@ -6,6 +6,11 @@
     <arg name="width" default="640"/>
     <arg name="height" default="480"/>
     <arg name="fps" default="90"/>
+    <arg name="contrast" default="0"/>
+    <arg name="sharpness" default="1"/>
+    <arg name="rectify" default="true"/>
+    <arg name="cam_prod_id" default="9760"/>
+    <arg name="gamma" default="100"/>
 
     <group ns="$(arg name)">
 
@@ -17,10 +22,14 @@
             <param name="width" value="$(arg width)"/>
             <param name="height" value="$(arg height)"/>
             <param name="fps" value="$(arg fps)"/>
+            <param name="contrast" value="$(arg contrast)"/>
+            <param name="sharpness" value="$(arg sharpness)"/>
+            <param name="cam_prod_id" value="$(arg cam_prod_id)"/>
+            <param name="gamma" value="$(arg gamma)"/>
         </node>
 
 	<!-- image rectification node -->
-        <node pkg="image_proc" name="image_proc" type="image_proc"/>
+        <node pkg="image_proc" name="image_proc" type="image_proc" if="$(arg rectify)"/>
 
     </group>
 </launch>

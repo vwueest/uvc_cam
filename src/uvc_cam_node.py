@@ -14,8 +14,8 @@ from sensor_msgs.msg import CameraInfo, Image
 DEFAULT_CAMERA_NAME = 'uvc_cam'
 DEFAULT_IMAGE_TOPIC = 'image_raw'
 DEFAULT_CAMERA_TOPIC = 'camera_info'
-DEFAULT_WIDTH = 960#640
-DEFAULT_HEIGHT = 540#480
+DEFAULT_WIDTH = 640
+DEFAULT_HEIGHT = 480
 DEFAULT_FPS = 90
 
 
@@ -32,20 +32,27 @@ class UVCCamNode:
         self.width        = rospy.get_param('~width', DEFAULT_WIDTH)
         self.height       = rospy.get_param('~height', DEFAULT_HEIGHT)
         self.fps          = rospy.get_param('~fps', DEFAULT_FPS)
+	self.contrast     = rospy.get_param('~contrast', 0)
+	self.sharpness    = rospy.get_param('~sharpness', 1)
+        self.cam_prod_id  = rospy.get_param('~cam_prod_id', 9760)
+        self.gamma        = rospy.get_param('~gamma',80)
 
 	# possible values to set can be found by running "rosrun uvc_camera uvc_camera_node _device:=/dev/video0", see http://github.com/ros-drivers/camera_umd.git
 	dev_list = uvc.device_list()
-	self.cap = uvc.Capture(dev_list[0]["uid"])
-        rospy.loginfo('starting cam at %ifps with %ix%i resolution'%(self.fps,self.width,self.height))
+	for i in range(0,len(dev_list)):
+	  if dev_list[i]["idProduct"] == self.cam_prod_id:
+            self.cap = uvc.Capture(dev_list[i]["uid"])
+            print("successfully connected to cmaera %i"%i)
+        rospy.loginfo('starting cam at %ifps with %ix%i resolution, %i contrast, %i shaprness'%(self.fps,self.width,self.height,self.contrast,self.sharpness))
         self.cap.frame_mode = (self.width, self.height, self.fps)
 	frame = self.cap.get_frame_robust()
 	controls_dict = dict([(c.display_name, c) for c in self.cap.controls])
-	controls_dict['Brightness'].value = 10 #[-64,64], not 0 (no effect)!!
-	controls_dict['Contrast'].value = 0 #[0,95]
+	controls_dict['Brightness'].value = 1#10 #[-64,64], not 0 (no effect)!!
+	controls_dict['Contrast'].value = self.contrast #0 #[0,95]
 	controls_dict['Hue'].value = 0 #[-2000,2000]
 	controls_dict['Saturation'].value = 0 #[0,100]
-	controls_dict['Sharpness'].value = 1 #[1,100]
-	controls_dict['Gamma'].value = 100 #[80,300]
+	controls_dict['Sharpness'].value = self.sharpness #1 #[1,100]
+	controls_dict['Gamma'].value = self.gamma #[80,300]
 	controls_dict['Power Line frequency'].value = 1 #1:50Hz, 2:60Hz
 	controls_dict['Backlight Compensation'].value = False #True or False
 	#controls_dict['Absolute Exposure Time'].value = 10000 #[78,10000] set Auto Exposure Mode to 1

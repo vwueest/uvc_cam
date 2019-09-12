@@ -40,9 +40,11 @@ class UVCCamNode:
 	# possible values to set can be found by running "rosrun uvc_camera uvc_camera_node _device:=/dev/video0", see http://github.com/ros-drivers/camera_umd.git
 	dev_list = uvc.device_list()
 	for i in range(0,len(dev_list)):
+          rospy.loginfo('available device %i: idProd: %i'%(i,dev_list[i]["idProduct"]))
 	  if dev_list[i]["idProduct"] == self.cam_prod_id:
             self.cap = uvc.Capture(dev_list[i]["uid"])
-            print("successfully connected to cmaera %i"%i)
+            #self.cap.set(CV_CAP_PROP_CONVERT_RGB, false)
+            rospy.loginfo("successfully connected to camera %i"%i)
         rospy.loginfo('starting cam at %ifps with %ix%i resolution, %i contrast, %i shaprness'%(self.fps,self.width,self.height,self.contrast,self.sharpness))
         self.cap.frame_mode = (self.width, self.height, self.fps)
 	frame = self.cap.get_frame_robust()

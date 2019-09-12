@@ -1,23 +1,18 @@
 <launch>
-    <arg name="name" default="camera"/>
     <arg name="image" default="image_raw"/>
     <arg name="camera" default="camera_info"/>
     <arg name="calibration" default="$(find uvc_cam)/calib/openMV_pinhole.yaml"/>
-    <arg name="width" default="640"/>
-    <arg name="height" default="480"/>
-    <arg name="fps" default="90"/>
-    <arg name="rectify" default="false"/>
+    <arg name="rectify" default="true"/>
+    <arg name="cam_name" default="camera"/>
 
-    <group ns="$(arg name)">
+    <group ns="$(arg cam_name)">
 
 	<!-- camera node, set parameters in uvc_cam_node.py -->
         <node pkg="uvc_cam" name="uvc_cam" type="uvc_cam_node.py" output="screen">
             <param name="image" value="$(arg image)"/>
             <param name="camera" value="$(arg camera)"/>
             <param name="calibration" value="$(arg calibration)"/>
-            <param name="width" value="$(arg width)"/>
-            <param name="height" value="$(arg height)"/>
-            <param name="fps" value="$(arg fps)"/>
+            <rosparam file="$(find uvc_cam)/config/$(arg cam_name).yaml"/>
         </node>
 
 	<!-- image rectification node -->

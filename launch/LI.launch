@@ -1,15 +1,15 @@
 <launch>
-    <arg name="name" default="downward"/>
+    <arg name="name" default="forward"/>
     <arg name="image" default="image_raw"/>
     <arg name="camera" default="camera_info"/>
     <arg name="calibration" default="$(find uvc_cam)/calib/openMV_pinhole.yaml"/>
-    <arg name="width" default="960"/>
-    <arg name="height" default="540"/>
-    <arg name="fps" default="120"/>
-    <arg name="contrast" default="10"/>
-    <arg name="sharpness" default="90"/>
+    <arg name="width" default="640"/>
+    <arg name="height" default="480"/>
+    <arg name="fps" default="60"/>
+    <arg name="contrast" default="0"/>
+    <arg name="sharpness" default="1"/>
     <arg name="rectify" default="true"/>
-    <arg name="cam_prod_id" default="8310"/>
+    <arg name="cam_prod_id" default="227"/>
     <arg name="gamma" default="100"/>
 
     <group ns="$(arg name)">

@@ -76,30 +76,34 @@ class UVCCamNode:
         self.camera_publisher = rospy.Publisher(self.camera_topic, CameraInfo,
                                                 queue_size=1)
         self.seq = 0
+	self.counter = 0
 	#self.rate = rospy.Rate(60)
 
     def read_and_publish_image(self):
 
         # Read image from camera
-        frame = self.cap.get_frame_robust()
-	capture_time = rospy.Time.now()
+        self.frame = self.cap.get_frame_robust()
+        if (self.counter % 2) == 0:
+          capture_time = rospy.Time.now()
 
-        # Convert numpy image to ROS image message
-        image_msg = self.bridge.cv2_to_imgmsg(frame.gray, encoding=self.encoding)
+          # Convert numpy image to ROS image message
+          self.image_msg = self.bridge.cv2_to_imgmsg(self.frame.gray, encoding=self.encoding)
 
-        # Add timestamp and sequence number (empty by default)
-        image_msg.header.stamp = capture_time
-        image_msg.header.seq = self.seq
+          # Add timestamp and sequence number (empty by default)
+          self.image_msg.header.stamp = capture_time
+          self.image_msg.header.seq = self.seq
 
-        self.image_publisher.publish(image_msg)
-        camera_msg = self.camera_info
-        camera_msg.header = image_msg.header  # Copy header from image message
-        self.camera_publisher.publish(camera_msg)
+          self.image_publisher.publish(self.image_msg)
+          camera_msg = self.camera_info
+          camera_msg.header = self.image_msg.header  # Copy header from image message
+          self.camera_publisher.publish(camera_msg)
 
-        if self.seq == 0:
-            rospy.loginfo("Publishing images from UVC Cam at '/{}/{}' "
-                          .format(DEFAULT_CAMERA_NAME,self.image_topic))
-        self.seq += 1
+          if self.seq == 0:
+              rospy.loginfo("Publishing images from UVC Cam at '/{}/{}' "
+                            .format(DEFAULT_CAMERA_NAME,self.image_topic))
+          self.seq += 1
+
+	self.counter += 1
 
 
 def main():

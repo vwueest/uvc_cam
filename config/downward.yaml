@@ -1,7 +1,7 @@
 name:        "downward"
 cam_prod_id: 8310
-width:       960
-height:      540
+width:       640 #960
+height:      480 #540
 fps:         120
 gamma:       100
 contrast:    10

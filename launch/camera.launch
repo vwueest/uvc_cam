@@ -4,6 +4,7 @@
     <arg name="calibration" default="$(find uvc_cam)/calib/openMV_pinhole.yaml"/>
     <arg name="rectify" default="true"/>
     <arg name="cam_name" default="camera"/>
+    <arg name="throttle" default="true"/>
 
     <group ns="$(arg cam_name)">
 
@@ -17,6 +18,9 @@
 
 	<!-- image rectification node -->
         <node pkg="image_proc" name="image_proc" type="image_proc" if="$(arg rectify)"/>
+
+        <!-- image throttling -->
+        <node pkg="topic_tools" name="throttle" type="throttle" args="messages /$(arg cam_name)/image_raw 71" if="$(arg throttle)"/>
 
     </group>
 </launch>

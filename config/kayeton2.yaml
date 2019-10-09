@@ -2,9 +2,5 @@ name:        "kayeton2"
 cam_prod_id: 8310
 width:       640 #960
 height:      480 #540
-#fps:         120
-#gamma:       100
-#contrast:    10
-#sharpness:   90
-#brightness:  64
-#backlight_comp: 2
+fps:         120
+

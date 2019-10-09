@@ -52,7 +52,7 @@ class UVCCamNode:
             self.cap = uvc.Capture(dev_list[i]["uid"])
             #self.cap.set(CV_CAP_PROP_CONVERT_RGB, false)
             rospy.loginfo("successfully connected to camera %i"%i)
-        rospy.loginfo('starting cam at %ifps with %ix%i resolution, %i contrast, %i shaprness'%(self.fps,self.width,self.height,self.contrast,self.sharpness))
+        rospy.loginfo('starting cam at %ifps with %ix%i resolution'%(self.fps,self.width,self.height))
         self.cap.frame_mode = (self.width, self.height, self.fps)
 	frame = self.cap.get_frame_robust()
 	self.controls_dict = dict([(c.display_name, c) for c in self.cap.controls])
@@ -96,7 +96,16 @@ class UVCCamNode:
           {contrast}, \
           {sharpness}
           """.format(**config))
-        #self.controls_dict['Absolute Exposure Time'].value = ;
+        self.controls_dict['Absolute Exposure Time'].value = config.exposure;
+        self.controls_dict['Auto Exposure Mode'].value = config.auto_exposure;
+        self.controls_dict['Brightness'].value = config.brightness;
+        self.controls_dict['Backlight Compensation'].value = config.backlight_comp;
+        self.controls_dict['Gamma'].value = config.gamma;
+        self.controls_dict['Contrast'].value = config.contrast;
+        self.controls_dict['Sharpness'].value = config.sharpness;
+
+	for c in self.cap.controls:
+		rospy.loginfo('%s: %i'%(c.display_name, c.value))
         return config
 
     def read_and_publish_image(self):

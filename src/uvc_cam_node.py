@@ -5,11 +5,15 @@ import uvc
 import sys
 import numpy as np
 import cv2
-
 import rospy
+from platform import python_version
 from camera_info_manager import CameraInfoManager
 from cv_bridge import CvBridge
 from sensor_msgs.msg import CameraInfo, Image
+
+# dynamic reconfigure 
+from dynamic_reconfigure.server import Server
+from uvc_cam.cfg import uvc_camConfig
 
 DEFAULT_CAMERA_NAME = 'uvc_cam'
 DEFAULT_IMAGE_TOPIC = 'image_raw'
@@ -36,6 +40,9 @@ class UVCCamNode:
 	self.sharpness    = rospy.get_param('~sharpness', 1)
         self.cam_prod_id  = rospy.get_param('~cam_prod_id', 9760)
         self.gamma        = rospy.get_param('~gamma',80)
+        self.exposure_abs = rospy.get_param('~exposure',50) #50 - 
+        self.brightness   = rospy.get_param('~brightness',1)
+        self.backlight_comp = rospy.get_param('~backlight_comp',0)
 
 	# possible values to set can be found by running "rosrun uvc_camera uvc_camera_node _device:=/dev/video0", see http://github.com/ros-drivers/camera_umd.git
 	dev_list = uvc.device_list()
@@ -49,7 +56,7 @@ class UVCCamNode:
         self.cap.frame_mode = (self.width, self.height, self.fps)
 	frame = self.cap.get_frame_robust()
 	controls_dict = dict([(c.display_name, c) for c in self.cap.controls])
-	controls_dict['Brightness'].value = 1#10 #[-64,64], not 0 (no effect)!!
+	controls_dict['Brightness'].value = self.brightness #10 #[-64,64], not 0 (no effect)!!
 	controls_dict['Contrast'].value = self.contrast #0 #[0,95]
 	controls_dict['Hue'].value = 0 #[-2000,2000]
 	controls_dict['Saturation'].value = 0 #[0,100]
@@ -57,8 +64,8 @@ class UVCCamNode:
 	controls_dict['Gamma'].value = self.gamma #[80,300]
 	controls_dict['Power Line frequency'].value = 1 #1:50Hz, 2:60Hz
 	controls_dict['Backlight Compensation'].value = False #True or False
-	#controls_dict['Absolute Exposure Time'].value = 10000 #[78,10000] set Auto Exposure Mode to 1
-	controls_dict['Auto Exposure Mode'].value = 8 #1:manual, 8:apperturePriority
+	controls_dict['Absolute Exposure Time'].value = self.exposure_abs #[78,10000] set Auto Exposure Mode to 1
+	controls_dict['Auto Exposure Mode'].value = 1 #1:manual, 8:apperturePriority
 	controls_dict['White Balance temperature,Auto'].value = True
 	#controls_dict['White Balance temperature'].value = 4600 #[2800,6500]
 	rospy.loginfo("These camera settings will be applied:")
@@ -79,29 +86,41 @@ class UVCCamNode:
 	self.counter = 0
 	#self.rate = rospy.Rate(60)
 
+    def callback(self, config, level):
+        rospy.loginfo("""Reconfigure Request: \
+          {exposure}, \
+          {auto_exposure}, \
+          {brightness}, \
+          {backlight_comp}, \
+          {gamma}, \
+          {contrast}, \
+          {sharpness}
+          """.format(**config))
+        return config
+
     def read_and_publish_image(self):
 
         # Read image from camera
         self.frame = self.cap.get_frame_robust()
         if (self.counter % 2) == 0:
-          capture_time = rospy.Time.now()
+            capture_time = rospy.Time.now()
 
-          # Convert numpy image to ROS image message
-          self.image_msg = self.bridge.cv2_to_imgmsg(self.frame.gray, encoding=self.encoding)
+            # Convert numpy image to ROS image message
+            self.image_msg = self.bridge.cv2_to_imgmsg(self.frame.gray, encoding=self.encoding)
 
-          # Add timestamp and sequence number (empty by default)
-          self.image_msg.header.stamp = capture_time
-          self.image_msg.header.seq = self.seq
+            # Add timestamp and sequence number (empty by default)
+            self.image_msg.header.stamp = capture_time
+            self.image_msg.header.seq = self.seq
 
-          self.image_publisher.publish(self.image_msg)
-          camera_msg = self.camera_info
-          camera_msg.header = self.image_msg.header  # Copy header from image message
-          self.camera_publisher.publish(camera_msg)
+            self.image_publisher.publish(self.image_msg)
+            camera_msg = self.camera_info
+            camera_msg.header = self.image_msg.header  # Copy header from image message
+            self.camera_publisher.publish(camera_msg)
 
-          if self.seq == 0:
-              rospy.loginfo("Publishing images from UVC Cam at '/{}/{}' "
+            if self.seq == 0:
+                rospy.loginfo("Publishing images from UVC Cam at '/{}/{}' "
                             .format(DEFAULT_CAMERA_NAME,self.image_topic))
-          self.seq += 1
+            self.seq += 1
 
 	self.counter += 1
 
@@ -109,6 +128,7 @@ class UVCCamNode:
 def main():
 
     uvc_cam_node = UVCCamNode()
+    srv = Server(uvc_camConfig, uvc_cam_node.callback)
 
     while not rospy.is_shutdown():
         uvc_cam_node.read_and_publish_image()

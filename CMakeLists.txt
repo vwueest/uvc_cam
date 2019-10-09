@@ -7,5 +7,12 @@ find_package(catkin REQUIRED COMPONENTS
   image_proc
   rospy
   sensor_msgs
+  dynamic_reconfigure
 )
+
+generate_dynamic_reconfigure_options(
+  cfg/cam_params.cfg
+)
+#add_dependencies(uvc_cam_node ${PROJECT_NAME}_gencfg)
+
 catkin_package()

@@ -1,6 +1,6 @@
 image_width: 960
 image_height: 540
-camera_name: downward
+camera_name: kayeton2
 camera_matrix:
   rows: 3
   cols: 3

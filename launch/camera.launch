@@ -3,10 +3,11 @@
     <arg name="camera" default="camera_info"/>
     <arg name="rectify" default="true"/>
     <arg name="cam_name" default="camera"/>
+    <arg name="description" default="camera"/>
     <arg name="throttle" default="false"/>
     <arg name="calibration" default="$(find uvc_cam)/calib/$(arg cam_name).yaml"/>
 
-    <group ns="$(arg cam_name)">
+    <group ns="$(arg description)">
 
 	<!-- camera node, set parameters in uvc_cam_node.py -->
         <node pkg="uvc_cam" name="uvc_cam" type="uvc_cam_node.py" output="screen">

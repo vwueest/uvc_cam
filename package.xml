@@ -10,10 +10,21 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <build_depend>dynamic_reconfigure</build_depend>
+  <build_depend>uvc</build_depend>
+  <build_depend>sys</build_depend>
+  <build_depend>np</build_depend>
+  <build_depend>cv2</build_depend>
+
   <run_depend>camera_info_manager_py</run_depend>
   <run_depend>cv_bridge</run_depend>
   <run_depend>image_proc</run_depend>
   <run_depend>rospy</run_depend>
   <run_depend>sensor_msgs</run_depend>
+  <run_depend>dynamic_reconfigure</run_depend>
+  <run_depend>uvc</run_depend>
+  <run_depend>sys</run_depend>
+  <run_depend>np</run_depend>
+  <run_depend>cv2</run_depend>
 
 </package>

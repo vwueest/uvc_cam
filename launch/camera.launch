@@ -17,6 +17,8 @@
             <rosparam file="$(find uvc_cam)/config/$(arg cam_name).yaml"/>
         </node>
 
+        <node pkg="dynamic_reconfigure" name="dynparam" type="dynparam" output="screen" args="load uvc_cam $(find uvc_cam)/config/kayeton2_dyn.yaml"/>
+
 	<!-- image rectification node -->
         <node pkg="image_proc" name="image_proc" type="image_proc" if="$(arg rectify)"/>
 

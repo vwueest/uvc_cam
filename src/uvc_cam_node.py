@@ -55,19 +55,19 @@ class UVCCamNode:
         rospy.loginfo('starting cam at %ifps with %ix%i resolution, %i contrast, %i shaprness'%(self.fps,self.width,self.height,self.contrast,self.sharpness))
         self.cap.frame_mode = (self.width, self.height, self.fps)
 	frame = self.cap.get_frame_robust()
-	controls_dict = dict([(c.display_name, c) for c in self.cap.controls])
-	controls_dict['Brightness'].value = self.brightness #10 #[-64,64], not 0 (no effect)!!
-	controls_dict['Contrast'].value = self.contrast #0 #[0,95]
-	controls_dict['Hue'].value = 0 #[-2000,2000]
-	controls_dict['Saturation'].value = 0 #[0,100]
-	controls_dict['Sharpness'].value = self.sharpness #1 #[1,100]
-	controls_dict['Gamma'].value = self.gamma #[80,300]
-	controls_dict['Power Line frequency'].value = 1 #1:50Hz, 2:60Hz
-	controls_dict['Backlight Compensation'].value = False #True or False
-	controls_dict['Absolute Exposure Time'].value = self.exposure_abs #[78,10000] set Auto Exposure Mode to 1
-	controls_dict['Auto Exposure Mode'].value = 1 #1:manual, 8:apperturePriority
-	controls_dict['White Balance temperature,Auto'].value = True
-	#controls_dict['White Balance temperature'].value = 4600 #[2800,6500]
+	self.controls_dict = dict([(c.display_name, c) for c in self.cap.controls])
+	self.controls_dict['Brightness'].value = self.brightness #10 #[-64,64], not 0 (no effect)!!
+	self.controls_dict['Contrast'].value = self.contrast #0 #[0,95]
+	self.controls_dict['Hue'].value = 0 #[-2000,2000]
+	self.controls_dict['Saturation'].value = 0 #[0,100]
+	self.controls_dict['Sharpness'].value = self.sharpness #1 #[1,100]
+	self.controls_dict['Gamma'].value = self.gamma #[80,300]
+	self.controls_dict['Power Line frequency'].value = 1 #1:50Hz, 2:60Hz
+	self.controls_dict['Backlight Compensation'].value = False #True or False
+	self.controls_dict['Absolute Exposure Time'].value = self.exposure_abs #[78,10000] set Auto Exposure Mode to 1
+	self.controls_dict['Auto Exposure Mode'].value = 1 #1:manual, 8:apperturePriority
+	self.controls_dict['White Balance temperature,Auto'].value = True
+	#self.controls_dict['White Balance temperature'].value = 4600 #[2800,6500]
 	rospy.loginfo("These camera settings will be applied:")
 	for c in self.cap.controls:
 		rospy.loginfo('%s: %i'%(c.display_name, c.value))
@@ -96,6 +96,7 @@ class UVCCamNode:
           {contrast}, \
           {sharpness}
           """.format(**config))
+        #self.controls_dict['Absolute Exposure Time'].value = ;
         return config
 
     def read_and_publish_image(self):

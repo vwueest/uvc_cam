@@ -3,6 +3,3 @@ cam_prod_id: 9760
 width:       640
 height:      480
 fps:         90
-gamma:       100
-contrast:    0
-sharpness:   1

@@ -1,6 +1,6 @@
 name:        "kayeton2"
 cam_prod_id: 8310
-width:       640 #960
-height:      480 #540
+width:       960 #640 #960
+height:      540 #480 #540
 fps:         120
 

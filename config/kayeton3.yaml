@@ -1,5 +1,5 @@
-name:        "kayeton2"
-cam_prod_id: 0 #8310
+name:        "kayeton3"
+cam_prod_id: 1 #8310 #2019040901
 width:       960 #640 #960
 height:      540 #480 #540
 fps:         120

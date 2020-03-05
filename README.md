@@ -1,7 +1,11 @@
 # UVC USB camera driver for ROS
 Simple UVC USB camera driver for ROS, based on Fabian Schilling's [OpenMV Cam ROS package](https://github.com/fabianschilling/openmv_cam). The standard libuvc did not allow me to set all settings as I wished, with this package this problem was solved.
 
-First, install the UVC library for python, as described in their README with all dependencies
+First, install 
+```
+sudo apt-get install autoconf libtool nasm
+```
+Then, install the UVC library for python, as described in their README with all dependencies
 ```
 https://github.com/pupil-labs/pyuvc
 ```

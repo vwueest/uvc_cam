@@ -8,7 +8,7 @@ exposure:       50
 hue:            0
 saturation:     0
 pwr_line_freq:  1
-auto_exp_prio:  0
+auto_exp_prio:  1
 white_bal_auto: 1
 white_bal:      4600
 

@@ -9,18 +9,18 @@
 
     <group ns="$(arg description)">
 
-	<!-- camera node, set parameters in uvc_cam_node.py -->
+        <!-- camera node, set parameters in uvc_cam_node.py -->
         <node pkg="uvc_cam" name="uvc_cam" type="uvc_cam_node.py" output="screen">
             <param name="image" value="$(arg image)"/>
             <param name="camera" value="$(arg camera)"/>
             <param name="calibration" value="$(arg calibration)"/>
             <rosparam file="$(find uvc_cam)/config/$(arg cam_name).yaml"/>
         </node>
-	
-	<!-- dynamic parameters -->
+
+        <!-- dynamic parameters -->
         <node pkg="dynamic_reconfigure" name="dynparam" type="dynparam" output="screen" args="load uvc_cam $(find uvc_cam)/config/$(arg cam_name)_dyn.yaml"/>
 
-	<!-- image rectification node -->
+        <!-- image rectification node -->
         <node pkg="image_proc" name="image_proc" type="image_proc" if="$(arg rectify)"/>
 
         <!-- image throttling -->
